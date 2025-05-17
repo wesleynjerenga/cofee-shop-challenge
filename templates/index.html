@@ -2,38 +2,65 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coffee Shop Orders</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container">
         <h1>Coffee Shop Orders</h1>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="{{ 'error' if 'error' in message else 'success' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
         <h2>Orders</h2>
-        <ul>
-        {% for order in orders %}
-            <li>{{ order.customer.name }} ordered {{ order.coffee.name }} for ${{ order.price }}</li>
-        {% endfor %}
-        </ul>
+        <div class="orders-list">
+            <ul>
+                {% for order in orders %}
+                    <li>
+                        <span class="customer">{{ order.customer.name }}</span>
+                        ordered <span class="coffee">{{ order.coffee.name }}</span>
+                        for <span class="price">${{ "%.2f"|format(order.price) }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
         <h2>Add Order</h2>
-        <form method="post" action="{{ url_for('add_order') }}">
-            <label>Customer:
-                <select name="customer">
-                {% for customer in customers %}
-                    <option value="{{ loop.index0 }}">{{ customer.name }}</option>
-                {% endfor %}
+        <form method="post" action="{{ url_for('add_order') }}" class="order-form">
+            <div class="form-group">
+                <label for="customer">Customer:</label>
+                <select name="customer" id="customer" required>
+                    {% for customer in customers %}
+                        <option value="{{ loop.index0 }}">{{ customer.name }}</option>
+                    {% endfor %}
                 </select>
-            </label>
-            <label>Coffee:
-                <select name="coffee">
-                {% for coffee in coffees %}
-                    <option value="{{ loop.index0 }}">{{ coffee.name }}</option>
-                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                <label for="coffee">Coffee:</label>
+                <select name="coffee" id="coffee" required>
+                    {% for coffee in coffees %}
+                        <option value="{{ loop.index0 }}">{{ coffee.name }}</option>
+                    {% endfor %}
                 </select>
-            </label>
-            <label>Price:
-                <input type="number" step="0.01" name="price" min="1" max="10" required>
-            </label>
-            <input type="submit" value="Add Order">
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" step="0.01" name="price" id="price" min="1" max="10" required>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Add Order" class="submit-btn">
+            </div>
         </form>
     </div>
 </body>
