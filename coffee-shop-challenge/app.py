@@ -1,4 +1,4 @@
-from flask import Flask, render_template_string, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for
 from customer import Customer
 from coffee import Coffee
 from order import Order
@@ -19,32 +19,7 @@ def index():
     customers = Customer._all
     coffees = Coffee._all
     orders = Order._all
-    return render_template_string("""
-    <h1>Coffee Shop Orders</h1>
-    <h2>Orders</h2>
-    <ul>
-    {% for order in orders %}
-      <li>{{ order.customer.name }} ordered {{ order.coffee.name }} for ${{ order.price }}</li>
-    {% endfor %}
-    </ul>
-    <h2>Add Order</h2>
-    <form method="post" action="{{ url_for('add_order') }}">
-      Customer:
-      <select name="customer">
-        {% for customer in customers %}
-          <option value="{{ loop.index0 }}">{{ customer.name }}</option>
-        {% endfor %}
-      </select>
-      Coffee:
-      <select name="coffee">
-        {% for coffee in coffees %}
-          <option value="{{ loop.index0 }}">{{ coffee.name }}</option>
-        {% endfor %}
-      </select>
-      Price: <input type="number" step="0.01" name="price" min="1" max="10" required>
-      <input type="submit" value="Add Order">
-    </form>
-    """, customers=customers, coffees=coffees, orders=orders)
+    return render_template("index.html", customers=customers, coffees=coffees, orders=orders)
 
 @app.route("/add_order", methods=["POST"])
 def add_order():
