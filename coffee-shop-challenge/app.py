@@ -3,7 +3,7 @@ from customer import Customer
 from coffee import Coffee
 from order import Order
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 
 # Sample data
 if not Customer._all:
