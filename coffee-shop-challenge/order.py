@@ -1,22 +1,30 @@
 class Order:
-    def __init__(self, order_id, customer, coffee):
-        self.order_id = order_id
-        self.customer = customer
-        self.coffee = coffee
-        self.status = 'Pending'
+    _all = []
 
-    def calculate_total(self):
-        # Assuming coffee has a price attribute
-        return self.coffee.price
+    def __init__(self, customer, coffee, price):
+        from customer import Customer
+        from coffee import Coffee
+        if not isinstance(customer, Customer):
+            raise TypeError("customer must be a Customer instance.")
+        if not isinstance(coffee, Coffee):
+            raise TypeError("coffee must be a Coffee instance.")
+        if not (isinstance(price, float) or isinstance(price, int)):
+            raise TypeError("price must be a float.")
+        if not (1.0 <= float(price) <= 10.0):
+            raise ValueError("price must be between 1.0 and 10.0.")
+        self._customer = customer
+        self._coffee = coffee
+        self._price = float(price)
+        Order._all.append(self)
 
-    def process_order(self):
-        # Logic to process the order
-        self.status = 'Processed'
+    @property
+    def customer(self):
+        return self._customer
 
-    def get_order_details(self):
-        return {
-            'order_id': self.order_id,
-            'customer': self.customer.name,
-            'coffee': self.coffee.type,
-            'status': self.status
-        }
+    @property
+    def coffee(self):
+        return self._coffee
+
+    @property
+    def price(self):
+        return self._price
